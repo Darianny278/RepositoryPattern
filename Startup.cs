@@ -14,6 +14,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using RepositoryPattern.Contexts;
 using RepositoryPattern.Entities;
+using RepositoryPattern.Implementations;
+using RepositoryPattern.Interfaces;
 using RepositoryPattern.Models;
 
 namespace RepositoryPattern
@@ -35,6 +37,9 @@ namespace RepositoryPattern
                 mapper.CreateMap<PersonDTO, Person>().ReverseMap();
                 mapper.CreateMap<PersonPhoneNumberDTO, PersonPhoneNumber>().ReverseMap();
             });
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IPersonRepository, PersonRepository>();
 
             var db_connection = Configuration.GetConnectionString("DB_CONNECTION");
             services.AddControllers();
