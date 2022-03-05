@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RepositoryPattern.Contexts;
 using RepositoryPattern.Entities;
+using RepositoryPattern.Models;
 
 namespace RepositoryPattern.Controllers{
     
@@ -14,15 +16,18 @@ namespace RepositoryPattern.Controllers{
     public class PersonController : ControllerBase
     {
         private readonly Context _context;
-        public PersonController(Context context)
+        private readonly IMapper _mapper; 
+
+        public PersonController(Context context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Person>>> GetAll(){
+        public async Task<ActionResult<IEnumerable<PersonDTO>>> GetAll(){
             try{
-                var response = await _context.Persons.ToListAsync();
+                var response = await _context.People.ToListAsync();
                 if(response.Count>0){
                     return Ok(response);
                 }else{
@@ -34,9 +39,9 @@ namespace RepositoryPattern.Controllers{
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Person>> GetById(int id){
+        public async Task<ActionResult<PersonDTO>> GetById(int id){
             try{
-                var response = await _context.Persons.Where(person=>person.Id == id).FirstOrDefaultAsync();
+                var response = await _context.People.Where(person=>person.Id == id).FirstOrDefaultAsync();
                 if(response == null){
                     return NotFound();
                 }else{
@@ -48,11 +53,14 @@ namespace RepositoryPattern.Controllers{
         }
 
         [HttpPost]
-        public async Task<ActionResult<Person>> SavePerson([FromBody] Person model){
+        public async Task<ActionResult<PersonDTO>> SavePerson([FromBody] PersonDTO model){
             try{
-                await _context.Persons.AddAsync(model);
+                var dbPerson = _mapper.Map<Person>(model);
+
+                await _context.People.AddAsync(dbPerson);
                 await _context.SaveChangesAsync();
-                return Ok(model);
+                
+                return Ok(dbPerson);
 
             }catch(Exception ex){
                 return BadRequest(ex.Message);
@@ -60,9 +68,9 @@ namespace RepositoryPattern.Controllers{
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdatePerson([FromBody] Person model, int id){
+        public async Task<ActionResult> UpdatePerson([FromBody] PersonDTO model, int id){
             try{
-                var dbPerson = await _context.Persons.Where(person => person.Id == id).FirstOrDefaultAsync();
+                var dbPerson = await _context.People.Where(person => person.Id == id).FirstOrDefaultAsync();
                 
                 if(dbPerson==null){
                     return NotFound();
@@ -70,7 +78,7 @@ namespace RepositoryPattern.Controllers{
                     dbPerson.FirstName = model.FirstName;
                     dbPerson.LastName = model.LastName;
                     dbPerson.Age = model.Age;
-                    _context.Persons.Update(dbPerson);
+                    _context.People.Update(dbPerson);
                     await _context.SaveChangesAsync();
                     return Ok();
                 }
@@ -82,11 +90,11 @@ namespace RepositoryPattern.Controllers{
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeletePerson(int id){
             try{
-                var dbPerson = await _context.Persons.Where(person=> person.Id == id).FirstOrDefaultAsync();
+                var dbPerson = await _context.People.Where(person=> person.Id == id).FirstOrDefaultAsync();
                 if(dbPerson==null){
                     return NotFound();
                 }else{
-                    _context.Persons.Remove(dbPerson);
+                    _context.People.Remove(dbPerson);
                     await _context.SaveChangesAsync();
                     return Ok();
                 }

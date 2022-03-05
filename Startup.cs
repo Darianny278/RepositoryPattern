@@ -13,6 +13,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using RepositoryPattern.Contexts;
+using RepositoryPattern.Entities;
+using RepositoryPattern.Models;
 
 namespace RepositoryPattern
 {
@@ -28,6 +30,11 @@ namespace RepositoryPattern
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddAutoMapper(mapper =>{
+                mapper.CreateMap<PersonDTO, Person>().ReverseMap();
+                mapper.CreateMap<PersonPhoneNumberDTO, PersonPhoneNumber>().ReverseMap();
+            });
 
             var db_connection = Configuration.GetConnectionString("DB_CONNECTION");
             services.AddControllers();

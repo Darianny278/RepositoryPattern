@@ -34,3 +34,5 @@ D:\.Net Core apps\RepositoryPattern\bin\Debug\net5.0\Microsoft.EntityFrameworkCo
 D:\.Net Core apps\RepositoryPattern\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Relational.dll
 D:\.Net Core apps\RepositoryPattern\bin\Debug\net5.0\MySqlConnector.dll
 D:\.Net Core apps\RepositoryPattern\bin\Debug\net5.0\Pomelo.EntityFrameworkCore.MySql.dll
+D:\.Net Core apps\RepositoryPattern\bin\Debug\net5.0\AutoMapper.dll
+D:\.Net Core apps\RepositoryPattern\bin\Debug\net5.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
