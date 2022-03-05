@@ -6,12 +6,14 @@ namespace RepositoryPattern.Implementations{
     public class UnitOfWork : IUnitOfWork
     {
         private readonly Context _context;
-        private readonly IPersonRepository _personRepository;
+        public IPersonRepository PersonRepository {get;}
         public UnitOfWork(Context context, IPersonRepository personRepository)
         {
             _context = context;
-            _personRepository = personRepository;
+            PersonRepository = personRepository;
         }
+
+
         public async Task<int> CommitAsync()
         {
             return await _context.SaveChangesAsync();
